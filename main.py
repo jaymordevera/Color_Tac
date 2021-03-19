@@ -24,7 +24,6 @@ n = random.randint(0, 1)
 turn = player[n]
 is_winner = False
 is_tie = False
-win_from = None
 
 # Squares
 SQUARE_WIDTH, SQUARE_HEIGHT = 100, 100
@@ -44,7 +43,6 @@ lst_squares = [pygame.Rect(20,50, SQUARE_WIDTH, SQUARE_HEIGHT),
 
 square_color = []
 
-# Draw a board in the screen
 def draw_board():
     global square_color
     square_color = []
@@ -60,7 +58,7 @@ def draw_board():
 
 # Check the board if there's a winner
 def check_board():
-    global is_winner, is_tie, win_from
+    global is_winner, is_tie
     
     def check_all():
         if is_winner == False:
@@ -76,37 +74,33 @@ def check_board():
             
     
     def check_horizontally(i):
-        global is_winner, win_from
+        global is_winner
         try:
             if i == 0 or i == 3 or i == 6:
                 if square_color[i] == square_color[i+1] and square_color[i] == square_color[i+2] and square_color[i] != BLACK:
                     is_winner = True
-                    win_from = f'Horizontally, from {i}'
         except:
             pass
         
     def check_vertically(i):
-        global is_winner, win_from
+        global is_winner
         try:
             if i == 0 or i == 1 or i == 2:
                 if square_color[i] == square_color[i+3] and square_color[i] == square_color[i+6] and square_color[i] != BLACK:
                     is_winner = True
-                    win_from = f'Vertically, from {i}'
         except:
             pass
     
     def check_diagonally(i):   
-        global is_winner, win_from
+        global is_winner
         
         try:
             if square_color[i] == square_color[i+4] and square_color[i] == square_color[i+8] and square_color[i] != BLACK:
                 is_winner = True
-                win_from = f'Diagonally, from {i}, 1'
             
             if i == 2:
                 if square_color[i] == square_color[i+2] and square_color[i] == square_color[i+4] and square_color[i] != BLACK:
                     is_winner = True
-                    win_from = f'Diagonally, from {i}, 2'
                 
         except:
             pass
@@ -167,17 +161,7 @@ def main():
                 pos_mouse = pygame.mouse.get_pos()
                 for index, square in enumerate(lst_squares):
                     if square.collidepoint(pos_mouse):
-                        change_color(index)
-
-                        for i in range(9):
-                            if i == 2 or i == 5:
-                                print(square_color[i], end='\n')
-                            elif i == 8:
-                                print(square_color[i], end='\n')
-                                print('')
-                            else:
-                                print(square_color[i], end=' ')
-                        
+                        change_color(index)  
                         check_board()
                         
                         if is_tie == True and is_winner == False:
@@ -188,8 +172,6 @@ def main():
                             main()
                             
                         if is_winner == True:
-                            print(win_from)
-                            print(' ')
                             winner = player.index(turn) - 1
                             draw_winner(player_win[winner])
                             pygame.display.update()
